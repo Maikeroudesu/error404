@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 — Signal Lost in Deep Space</title>
+  <style>
+    :root {
+      --bg-void: #04050d;
+      --card-bg: rgba(13, 18, 38, 0.72);
+      --card-border: rgba(124, 156, 255, 0.22);
+      --text-main: #eef2ff;
+      --text-muted: #94a3b8;
+      --accent-cyan: #38bdf8;
+      --accent-purple: #a855f7;
+      --accent-pink: #ec4899;
+      --status-online: #10b981;
+      --status-offline: #ef4444;
+      --status-warn: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--bg-void);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      padding: 1.5rem;
+    }
+
+    #starfield {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .nebula-glow {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 25%, rgba(168, 85, 247, 0.16), transparent 45%),
+        radial-gradient(circle at 80% 75%, rgba(56, 189, 248, 0.15), transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.08), transparent 60%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      max-width: 720px;
+      width: 100%;
+      background: var(--card-bg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.65),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+
+    /* Top Status Pill */
+    .telemetry-header {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--status-online);
+      box-shadow: 0 0 10px var(--status-online);
+      animation: pulse 1.8s infinite;
+    }
+
+    .pulse-dot.offline {
+      background-color: var(--status-offline);
+      box-shadow: 0 0 10px var(--status-offline);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.9; }
+      50% { transform: scale(1.3); opacity: 0.45; }
+      100% { transform: scale(0.95); opacity: 0.9; }
+    }
+
+    /* Hero 404 & Floating Satellite */
+    .hero-visual {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .error-code {
+      font-size: clamp(5rem, 16vw, 8.5rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      background: linear-gradient(135deg, #ffffff 15%, var(--accent-cyan) 50%, var(--accent-purple) 85%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 28px rgba(56, 189, 248, 0.35));
+      user-select: none;
+    }
+
+    .astronaut-float {
+      position: absolute;
+      width: 78px;
+      height: 78px;
+      animation: floatOrbit 6s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes floatOrbit {
+      0%, 100% { transform: translateY(-8px) rotate(-6deg); }
+      50% { transform: translateY(10px) rotate(8deg); }
+    }
+
+    h1 {
+      font-size: clamp(1.35rem, 3.5vw, 1.85rem);
+      font-weight: 700;
+      margin-bottom: 0.65rem;
+      color: #f8fafc;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      line-height: 1.6;
+      max-width: 520px;
+      margin: 0 auto 1.75rem;
+    }
+
+    /* Network Diagnostics Grid */
+    .diagnostics-panel {
+      background: rgba(6, 10, 24, 0.7);
+      border: 1px solid rgba(124, 156, 255, 0.16);
+      border-radius: 16px;
+      padding: 1.15rem;
+      margin-bottom: 1.75rem;
+      text-align: left;
+    }
+
+    .panel-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.9rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.85rem;
+    }
+
+    .metric-box {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      border-radius: 12px;
+      padding: 0.75rem 0.9rem;
+    }
+
+    .metric-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.3rem;
+    }
+
+    .metric-value {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+    }
+
+    .metric-value.ok { color: var(--status-online); }
+    .metric-value.err { color: var(--status-offline); }
+
+    /* Action Buttons */
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      justify-content: center;
+    }
+
+    button, .btn-link {
+      cursor: pointer;
+      border: none;
+      border-radius: 12px;
+      padding: 0.78rem 1.35rem;
+      font-size: 0.92rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      color: #ffffff;
+      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(168, 85, 247, 0.45);
+    }
+
+    .btn-secondary {
+      background: rgba(30, 41, 59, 0.85);
+      color: var(--text-main);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(51, 65, 85, 0.9);
+      border-color: var(--accent-cyan);
+    }
+
+    .btn-warp.active {
+      background: rgba(236, 72, 153, 0.22);
+      border-color: var(--accent-pink);
+      color: #fbcfe8;
+      box-shadow: 0 0 18px rgba(236, 72, 153, 0.35);
+    }
+
+    .footer-hint {
+      margin-top: 1.4rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    kbd {
+      background: rgba(30, 41, 59, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      border-radius: 5px;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.72rem;
+      color: #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="starfield"></canvas>
+  <div class="nebula-glow"></div>
+
+  <main class="container">
+    <div class="telemetry-header">
+      <span id="statusDot" class="pulse-dot"></span>
+      <span id="statusBannerText">SUBSPACE LINK: ESTABLISHED</span>
+    </div>
+
+    <div class="hero-visual">
+      <div class="error-code">404</div>
+      <!-- Floating Satellite / Orbit SVG -->
+      <svg class="astronaut-float" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="50" cy="50" r="22" fill="url(#planetGrad)" />
+        <ellipse cx="50" cy="50" rx="42" ry="12" transform="rotate(-22 50 50)" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="6 4" />
+        <circle cx="84" cy="36" r="4" fill="#ec4899" />
+        <defs>
+          <linearGradient id="planetGrad" x1="28" y1="28" x2="72" y2="72" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#a855f7" />
+            <stop offset="1" stop-color="#1e1b4b" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <h1 id="headlineText">Coordinates Lost in Deep Space</h1>
+    <p id="subheadlineText" class="subtitle">
+      The requested sector could not be located on this star chart. Your local transceiver is active, but the target endpoint returned an HTTP 404 void.
+    </p>
+
+    <section class="diagnostics-panel" aria-label="Network Telemetry">
+      <div class="panel-top">
+        <span>Network Telemetry</span>
+        <span id="timestampDisplay">--:--:-- UTC</span>
+      </div>
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <div class="metric-label">Link State</div>
+          <div id="linkStateVal" class="metric-value ok">ONLINE</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Signal Latency</div>
+          <div id="latencyVal" class="metric-value">24 ms</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Band / Type</div>
+          <div id="connTypeVal" class="metric-value">4G / Broad</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Sector Code</div>
+          <div id="errorCodeVal" class="metric-value">ERR_404_VOID</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button id="scanBtn" class="btn-primary" type="button">
+        <span>Run Signal Scan</span>
+      </button>
+      <a href="/" class="btn-secondary btn-link">
+        <span>Return to Base</span>
+      </a>
+      <button id="warpBtn" class="btn-secondary btn-warp" type="button">
+        <span>Engage Warp</span>
+      </button>
+    </div>
+
+    <p class="footer-hint">
+      Pro tip: Hold <kbd>Space</kbd> or toggle Warp Drive to accelerate through the sector.
+    </p>
+  </main>
+
+  <script>
+    // ==========================================
+    // 1. LIVE NETWORK STATUS & TELEMETRY LOGIC
+    // ==========================================
+    const statusDot = document.getElementById("statusDot");
+    const statusBannerText = document.getElementById("statusBannerText");
+    const headlineText = document.getElementById("headlineText");
+    const subheadlineText = document.getElementById("subheadlineText");
+    const linkStateVal = document.getElementById("linkStateVal");
+    const latencyVal = document.getElementById("latencyVal");
+    const connTypeVal = document.getElementById("connTypeVal");
+    const errorCodeVal = document.getElementById("errorCodeVal");
+    const timestampDisplay = document.getElementById("timestampDisplay");
+    const scanBtn = document.getElementById("scanBtn");
+
+    function updateClock() {
+      const now = new Date();
+      timestampDisplay.textContent = now.toISOString().split("T")[1].slice(0, 8) + " UTC";
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function updateNetworkUI() {
+      const isOnline = navigator.onLine;
+      const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+
+      if (isOnline) {
+        statusDot.classList.remove("offline");
+        statusBannerText.textContent = "SUBSPACE LINK: ESTABLISHED";
+        linkStateVal.textContent = "ONLINE";
+        linkStateVal.className = "metric-value ok";
+        errorCodeVal.textContent = "HTTP_404_MISSING";
+        headlineText.textContent = "Coordinates Lost in Deep Space";
+        subheadlineText.textContent =
+          "Your local transceiver is online, but the requested sector does not exist or has drifted out of orbit.";
+      } else {
+        statusDot.classList.add("offline");
+        statusBannerText.textContent = "SUBSPACE LINK: SEVERED";
+        linkStateVal.textContent = "OFFLINE";
+        linkStateVal.className = "metric-value err";
+        latencyVal.textContent = "TIMEOUT";
+        errorCodeVal.textContent = "NET_DISCONNECTED";
+        headlineText.textContent = "Comms Array Offline";
+        subheadlineText.textContent =
+          "No carrier wave detected. Check your local router, Wi-Fi, or planetary uplink and try scanning again.";
+      }
+
+      if (conn) {
+        const type = (conn.effectiveType || conn.type || "UNKNOWN").toUpperCase();
+        const downlink = conn.downlink ? `${conn.downlink} Mbps` : "";
+        connTypeVal.textContent = downlink ? `${type} (${downlink})` : type;
+        if (isOnline && typeof conn.rtt === "number" && conn.rtt > 0) {
+          latencyVal.textContent = `${conn.rtt} ms`;
+        }
+      } else {
+        connTypeVal.textContent = isOnline ? "STANDARD" : "NONE";
+      }
+    }
+
+    async function runDiagnostics() {
+      scanBtn.disabled = true;
+      scanBtn.innerHTML = "<span>Scanning Subspace...</span>";
+      latencyVal.textContent = "PINGING...";
+
+      const start = performance.now();
+      try {
+        // Lightweight connectivity check using current origin favicon/root with cache busting
+        await fetch(window.location.origin + "/?_ping=" + Date.now(), {
+          method: "HEAD",
+          cache: "no-store"
+        });
+        const rtt = Math.max(1, Math.round(performance.now() - start));
+        latencyVal.textContent = `${rtt} ms`;
+        updateNetworkUI();
+      } catch (err) {
+        if (!navigator.onLine) {
+          updateNetworkUI();
+        } else {
+          latencyVal.textContent = "UNREACHABLE";
+          errorCodeVal.textContent = "ERR_HOST_VOID";
+        }
+      } finally {
+        setTimeout(() => {
+          scanBtn.disabled = false;
+          scanBtn.innerHTML = "<span>Run Signal Scan</span>";
+        }, 450);
+      }
+    }
+
+    window.addEventListener("online", updateNetworkUI);
+    window.addEventListener("offline", updateNetworkUI);
+    if (navigator.connection) {
+      navigator.connection.addEventListener("change", updateNetworkUI);
+    }
+    scanBtn.addEventListener("click", runDiagnostics);
+    updateNetworkUI();
+
+    // ==========================================
+    // 2. INTERACTIVE GALAXY & WARP STARFIELD
+    // ==========================================
+    const canvas = document.getElementById("starfield");
+    const ctx = canvas.getContext("2d");
+    const warpBtn = document.getElementById("warpBtn");
+
+    let width, height, centerX, centerY;
+    let stars = [];
+    const STAR_COUNT = 320;
+    let warpActive = false;
+    let speed = 0.35;
+    let mouseX = 0;
+    let mouseY = 0;
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      centerX = width / 2;
+      centerY = height / 2;
+    }
+
+    function createStar() {
+      const colors = ["#ffffff", "#bae6fd", "#e9d5ff", "#fbcfe8", "#fde68a"];
+      return {
+        x: (Math.random() - 0.5) * width * 1.5,
+        y: (Math.random() - 0.5) * height * 1.5,
+        z: Math.random() * width,
+        pz: 0,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        size: Math.random() * 1.6 + 0.5
+      };
+    }
+
+    function initStars() {
+      stars = [];
+      for (let i = 0; i < STAR_COUNT; i++) {
+        const s = createStar();
+        s.pz = s.z;
+        stars.push(s);
+      }
+    }
+
+    function toggleWarp(forceState) {
+      warpActive = typeof forceState === "boolean" ? forceState : !warpActive;
+      warpBtn.classList.toggle("active", warpActive);
+      warpBtn.innerHTML = warpActive
+        ? "<span>Disengage Warp</span>"
+        : "<span>Engage Warp</span>";
+    }
+
+    warpBtn.addEventListener("click", () => toggleWarp());
+
+    window.addEventListener("keydown", (e) => {
+      if (e.code === "Space" && document.activeElement !== scanBtn) {
+        e.preventDefault();
+        if (!warpActive) toggleWarp(true);
+      }
+    });
+
+    window.addEventListener("keyup", (e) => {
+      if (e.code === "Space") {
+        toggleWarp(false);
+      }
+    });
+
+    window.addEventListener("mousemove", (e) => {
+      mouseX = (e.clientX - centerX) * 0.04;
+      mouseY = (e.clientY - centerY) * 0.04;
+    });
+
+    window.addEventListener("resize", () => {
+      resizeCanvas();
+      initStars();
+    });
+
+    function animate() {
+      const targetSpeed = warpActive ? 22 : 0.45;
+      speed += (targetSpeed - speed) * 0.08;
+
+      // Trail fade effect during warp
+      ctx.fillStyle = warpActive ? "rgba(4, 5, 13, 0.28)" : "rgba(4, 5, 13, 0.85)";
+      ctx.fillRect(0, 0, width, height);
+
+      for (let i = 0; i < stars.length; i++) {
+        const star = stars[i];
+        star.pz = star.z;
+        star.z -= speed;
+
+        if (star.z <= 1) {
+          star.x = (Math.random() - 0.5) * width * 1.5;
+          star.y = (Math.random() - 0.5) * height * 1.5;
+          star.z = width;
+          star.pz = star.z;
+        }
+
+        const sx = (star.x / star.z) * width + centerX - mouseX;
+        const sy = (star.y / star.z) * height + centerY - mouseY;
+
+        const px = (star.x / star.pz) * width + centerX - mouseX;
+        const py = (star.y / star.pz) * height + centerY - mouseY;
+
+        const radius = Math.max(0.3, (1 - star.z / width) * star.size * 2.2);
+
+        if (speed > 2) {
+          ctx.beginPath();
+          ctx.strokeStyle = star.color;
+          ctx.lineWidth = radius;
+          ctx.moveTo(px, py);
+          ctx.lineTo(sx, sy);
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.fillStyle = star.color;
+          ctx.arc(sx, sy, radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    resizeCanvas();
+    initStars();
+    animate();
+  </script>
+</body>
+</html>
