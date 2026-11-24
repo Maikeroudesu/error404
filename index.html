@@ -1,9 +1,12 @@
+Here is the updated code with the exact heading **"503 – Service Unavailable"** applied when in 503 maintenance mode (and set as the default view):
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Space Network Diagnostics — 404 / 503</title>
+  <title>503 – Service Unavailable</title>
   <style>
     :root {
       --bg-void: #04050d;
@@ -510,20 +513,20 @@
     }
   </style>
 </head>
-<body>
+<body class="mode-503">
   <canvas id="starfield"></canvas>
   <div class="nebula-glow"></div>
 
   <main class="container">
     <div class="top-bar">
       <div class="telemetry-header">
-        <span id="statusDot" class="pulse-dot"></span>
-        <span id="statusBannerText">SUBSPACE LINK: ESTABLISHED</span>
+        <span id="statusDot" class="pulse-dot maint"></span>
+        <span id="statusBannerText">DRY-DOCK OVERHAUL: IN PROGRESS</span>
       </div>
 
       <div class="mode-switcher" role="group" aria-label="Status Code Preview">
-        <button type="button" class="mode-btn active" data-mode="404">404 Void</button>
-        <button type="button" class="mode-btn" data-mode="503">503 Repair</button>
+        <button type="button" class="mode-btn" data-mode="404">404 Void</button>
+        <button type="button" class="mode-btn active" data-mode="503">503 Repair</button>
       </div>
     </div>
 
@@ -606,9 +609,9 @@
       </div>
     </div>
 
-    <h1 id="headlineText">Coordinates Lost in Deep Space</h1>
+    <h1 id="headlineText">503 – Service Unavailable</h1>
     <p id="subheadlineText" class="subtitle">
-      The requested sector could not be located on this star chart. Your local transceiver is active, but the target endpoint returned an HTTP 404 void.
+      Autonomous droid Unit-734 is currently welding core circuits and recalibrating the subspace relay. Service will resume shortly.
     </p>
 
     <!-- 503 SUBSYSTEM REPAIR PROGRESS -->
@@ -649,12 +652,12 @@
           <div id="latencyVal" class="metric-value">24 ms</div>
         </div>
         <div class="metric-box">
-          <div class="metric-label" id="thirdMetricLabel">Band / Type</div>
-          <div id="connTypeVal" class="metric-value">4G / Broad</div>
+          <div class="metric-label" id="thirdMetricLabel">Est. Reboot</div>
+          <div id="connTypeVal" class="metric-value warn">04:20 ETA</div>
         </div>
         <div class="metric-box">
           <div class="metric-label">Sector Code</div>
-          <div id="errorCodeVal" class="metric-value">HTTP_404_VOID</div>
+          <div id="errorCodeVal" class="metric-value warn">HTTP_503_MAINT</div>
         </div>
       </div>
     </section>
@@ -662,7 +665,7 @@
     <!-- ACTIONS -->
     <div class="actions">
       <button id="scanBtn" class="btn-primary" type="button">
-        <span id="scanBtnLabel">Run Signal Scan</span>
+        <span id="scanBtnLabel">Check Uplink Ready</span>
       </button>
       <a href="/" class="btn-secondary btn-link">
         <span>Return to Base</span>
@@ -682,7 +685,7 @@
     // 1. STATE & MODE MANAGEMENT (404 vs 503)
     // ==========================================
     const urlParams = new URLSearchParams(window.location.search);
-    let currentMode = urlParams.get("status") === "503" ? "503" : "404";
+    let currentMode = urlParams.get("status") === "404" ? "404" : "503";
 
     const statusDot = document.getElementById("statusDot");
     const statusBannerText = document.getElementById("statusBannerText");
@@ -735,6 +738,7 @@
     function setMode(mode) {
       currentMode = mode;
       document.body.classList.toggle("mode-503", mode === "503");
+      document.title = mode === "503" ? "503 – Service Unavailable" : "404 – Page Not Found";
 
       modeBtns.forEach((btn) => {
         btn.classList.toggle("active", btn.dataset.mode === mode);
@@ -777,7 +781,7 @@
       if (currentMode === "503") {
         statusDot.classList.add("maint");
         statusBannerText.textContent = "DRY-DOCK OVERHAUL: IN PROGRESS";
-        headlineText.textContent = "Self-Repair Sequence Active";
+        headlineText.textContent = "503 – Service Unavailable";
         subheadlineText.textContent =
           "Autonomous droid Unit-734 is currently welding core circuits and recalibrating the subspace relay. Service will resume shortly.";
         thirdMetricLabel.textContent = "Est. Reboot";
@@ -978,3 +982,5 @@
   </script>
 </body>
 </html>
+
+```
