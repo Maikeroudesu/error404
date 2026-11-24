@@ -1,6 +1,3 @@
-Here is the updated code with the exact heading **"503 – Service Unavailable"** applied when in 503 maintenance mode (and set as the default view):
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,26 +5,6 @@ Here is the updated code with the exact heading **"503 – Service Unavailable"*
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>503 – Service Unavailable</title>
   <style>
-    :root {
-      --bg-void: #04050d;
-      --card-bg: rgba(13, 18, 38, 0.76);
-      --card-border: rgba(124, 156, 255, 0.24);
-      --text-main: #eef2ff;
-      --text-muted: #94a3b8;
-      --accent-cyan: #38bdf8;
-      --accent-purple: #a855f7;
-      --accent-pink: #ec4899;
-      --accent-amber: #f59e0b;
-      --accent-orange: #f97316;
-      --status-online: #10b981;
-      --status-offline: #ef4444;
-      --status-warn: #f59e0b;
-    }
-
-    body.mode-503 {
-      --card-border: rgba(245, 158, 11, 0.34);
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
@@ -36,15 +13,14 @@ Here is the updated code with the exact heading **"503 – Service Unavailable"*
 
     body {
       min-height: 100vh;
-      background-color: var(--bg-void);
-      color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: #04050d;
+      color: #eef2ff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow-x: hidden;
+      text-align: center;
       padding: 1.5rem;
-      transition: background-color 0.4s ease;
     }
 
     #starfield {
@@ -56,931 +32,80 @@ Here is the updated code with the exact heading **"503 – Service Unavailable"*
       pointer-events: none;
     }
 
-    .nebula-glow {
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(circle at 20% 25%, rgba(168, 85, 247, 0.16), transparent 45%),
-        radial-gradient(circle at 80% 75%, rgba(56, 189, 248, 0.15), transparent 50%),
-        radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.08), transparent 60%);
+    main {
+      position: relative;
       z-index: 1;
-      pointer-events: none;
-      transition: opacity 0.5s ease;
+      max-width: 540px;
     }
 
-    body.mode-503 .nebula-glow {
-      background:
-        radial-gradient(circle at 22% 25%, rgba(245, 158, 11, 0.16), transparent 46%),
-        radial-gradient(circle at 78% 75%, rgba(56, 189, 248, 0.13), transparent 50%),
-        radial-gradient(circle at 50% 45%, rgba(249, 115, 22, 0.11), transparent 60%);
-    }
-
-    .container {
-      position: relative;
-      z-index: 2;
-      max-width: 740px;
-      width: 100%;
-      background: var(--card-bg);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      padding: 2rem 2rem 2.25rem;
-      box-shadow:
-        0 25px 60px rgba(0, 0, 0, 0.68),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      text-align: center;
-      transition: border-color 0.35s ease;
-    }
-
-    /* Top Bar: Status Pill + Mode Switcher */
-    .top-bar {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .telemetry-header {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.65rem;
-      padding: 0.45rem 1rem;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(148, 163, 184, 0.25);
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .pulse-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background-color: var(--status-online);
-      box-shadow: 0 0 10px var(--status-online);
-      animation: pulse 1.8s infinite;
-    }
-
-    .pulse-dot.offline {
-      background-color: var(--status-offline);
-      box-shadow: 0 0 10px var(--status-offline);
-    }
-
-    .pulse-dot.maint {
-      background-color: var(--status-warn);
-      box-shadow: 0 0 10px var(--status-warn);
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(0.95); opacity: 0.9; }
-      50% { transform: scale(1.3); opacity: 0.45; }
-      100% { transform: scale(0.95); opacity: 0.9; }
-    }
-
-    /* Mode Switcher Tabs */
-    .mode-switcher {
-      display: inline-flex;
-      background: rgba(6, 10, 24, 0.85);
-      border: 1px solid rgba(148, 163, 184, 0.22);
-      border-radius: 999px;
-      padding: 0.25rem;
-      gap: 0.25rem;
-    }
-
-    .mode-btn {
-      padding: 0.38rem 0.85rem;
-      border-radius: 999px;
-      font-size: 0.76rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      background: transparent;
-      color: var(--text-muted);
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .mode-btn:hover {
-      color: #ffffff;
-    }
-
-    .mode-btn.active[data-mode="404"] {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-      color: #ffffff;
-      box-shadow: 0 2px 12px rgba(56, 189, 248, 0.35);
-    }
-
-    .mode-btn.active[data-mode="503"] {
-      background: linear-gradient(135deg, var(--accent-amber), var(--accent-orange));
-      color: #090d16;
-      box-shadow: 0 2px 12px rgba(245, 158, 11, 0.4);
-    }
-
-    /* Hero Section */
-    .hero-visual {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 150px;
-      margin-bottom: 0.65rem;
-    }
-
-    .error-code {
-      font-size: clamp(5rem, 16vw, 8.5rem);
+    .code {
+      font-size: clamp(5rem, 18vw, 9rem);
       font-weight: 900;
       line-height: 1;
       letter-spacing: -0.04em;
-      background: linear-gradient(135deg, #ffffff 15%, var(--accent-cyan) 50%, var(--accent-purple) 85%);
+      background: linear-gradient(135deg, #ffffff 15%, #fde047 50%, #f97316 88%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 28px rgba(56, 189, 248, 0.35));
-      user-select: none;
-      transition: all 0.3s ease;
-    }
-
-    body.mode-503 .error-code {
-      background: linear-gradient(135deg, #ffffff 15%, #fde047 50%, var(--accent-orange) 88%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 28px rgba(245, 158, 11, 0.35));
-    }
-
-    /* 404 Planet Visual */
-    .visual-404 {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .planet-float {
-      position: absolute;
-      width: 82px;
-      height: 82px;
-      animation: floatOrbit 6s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    @keyframes floatOrbit {
-      0%, 100% { transform: translateY(-8px) rotate(-6deg); }
-      50% { transform: translateY(10px) rotate(8deg); }
-    }
-
-    /* 503 Self-Repairing Robot Visual */
-    .robot-stage {
-      display: none;
-      align-items: center;
-      justify-content: center;
-      gap: 1.25rem;
-      flex-wrap: wrap;
-    }
-
-    body.mode-503 .visual-404 {
-      display: none;
-    }
-
-    body.mode-503 .robot-stage {
-      display: flex;
-    }
-
-    .robot-svg {
-      width: 158px;
-      height: 158px;
-      animation: robotHover 3.4s ease-in-out infinite;
-      filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.55));
-    }
-
-    @keyframes robotHover {
-      0%, 100% { transform: translateY(-5px); }
-      50% { transform: translateY(6px); }
-    }
-
-    /* Robot internal SVG animations */
-    .robot-antenna-light {
-      animation: blinkBeacon 1.1s infinite alternate;
-    }
-
-    @keyframes blinkBeacon {
-      0% { opacity: 0.35; fill: #f59e0b; }
-      100% { opacity: 1; fill: #fef08a; }
-    }
-
-    .robot-wrench-arm {
-      transform-origin: 42px 84px;
-      animation: wrenchTurn 1.6s ease-in-out infinite;
-    }
-
-    @keyframes wrenchTurn {
-      0%, 100% { transform: rotate(-14deg); }
-      50% { transform: rotate(16deg); }
-    }
-
-    .robot-torch-arm {
-      transform-origin: 118px 84px;
-      animation: torchWeld 0.9s ease-in-out infinite alternate;
-    }
-
-    @keyframes torchWeld {
-      0% { transform: rotate(8deg); }
-      100% { transform: rotate(-6deg); }
-    }
-
-    .weld-flash {
-      transform-origin: 83px 96px;
-      animation: arcFlash 0.25s infinite alternate;
-    }
-
-    @keyframes arcFlash {
-      0% { opacity: 0.3; transform: scale(0.75); }
-      100% { opacity: 1; transform: scale(1.25); }
-    }
-
-    .spark-1 {
-      animation: sparkFly1 0.85s ease-out infinite;
-    }
-    .spark-2 {
-      animation: sparkFly2 0.95s ease-out infinite 0.2s;
-    }
-    .spark-3 {
-      animation: sparkFly3 0.75s ease-out infinite 0.4s;
-    }
-
-    @keyframes sparkFly1 {
-      0% { transform: translate(0, 0) scale(1); opacity: 1; }
-      100% { transform: translate(-18px, -16px) scale(0); opacity: 0; }
-    }
-    @keyframes sparkFly2 {
-      0% { transform: translate(0, 0) scale(1); opacity: 1; }
-      100% { transform: translate(16px, -18px) scale(0); opacity: 0; }
-    }
-    @keyframes sparkFly3 {
-      0% { transform: translate(0, 0) scale(1); opacity: 1; }
-      100% { transform: translate(-12px, 15px) scale(0); opacity: 0; }
+      margin-bottom: 0.75rem;
     }
 
     h1 {
-      font-size: clamp(1.35rem, 3.5vw, 1.85rem);
+      font-size: clamp(1.4rem, 4vw, 2rem);
       font-weight: 700;
-      margin-bottom: 0.65rem;
-      color: #f8fafc;
-    }
-
-    .subtitle {
-      color: var(--text-muted);
-      font-size: 0.96rem;
-      line-height: 1.6;
-      max-width: 540px;
-      margin: 0 auto 1.65rem;
-    }
-
-    /* Maintenance Progress Bars (503 Only) */
-    .repair-progress-panel {
-      display: none;
-      background: rgba(245, 158, 11, 0.08);
-      border: 1px solid rgba(245, 158, 11, 0.28);
-      border-radius: 16px;
-      padding: 1rem 1.15rem;
-      margin-bottom: 1.25rem;
-      text-align: left;
-    }
-
-    body.mode-503 .repair-progress-panel {
-      display: block;
-    }
-
-    .repair-row {
       margin-bottom: 0.75rem;
     }
-    .repair-row:last-child {
-      margin-bottom: 0;
-    }
 
-    .repair-label-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.78rem;
-      font-weight: 600;
-      margin-bottom: 0.35rem;
-      color: #fde68a;
-    }
-
-    .progress-track {
-      width: 100%;
-      height: 8px;
-      background: rgba(15, 23, 42, 0.85);
-      border-radius: 999px;
-      overflow: hidden;
-      border: 1px solid rgba(245, 158, 11, 0.2);
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent-amber), #fef08a);
-      border-radius: 999px;
-      transition: width 0.5s ease;
-    }
-
-    /* Network Diagnostics Grid */
-    .diagnostics-panel {
-      background: rgba(6, 10, 24, 0.72);
-      border: 1px solid rgba(124, 156, 255, 0.16);
-      border-radius: 16px;
-      padding: 1.15rem;
-      margin-bottom: 1.65rem;
-      text-align: left;
-    }
-
-    .panel-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.9rem;
-      padding-bottom: 0.65rem;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
-      font-size: 0.76rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 0.85rem;
-    }
-
-    .metric-box {
-      background: rgba(15, 23, 42, 0.65);
-      border: 1px solid rgba(148, 163, 184, 0.12);
-      border-radius: 12px;
-      padding: 0.75rem 0.9rem;
-    }
-
-    .metric-label {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.3rem;
-    }
-
-    .metric-value {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.92rem;
-      font-weight: 600;
-      color: var(--accent-cyan);
-    }
-
-    .metric-value.ok { color: var(--status-online); }
-    .metric-value.err { color: var(--status-offline); }
-    .metric-value.warn { color: var(--status-warn); }
-
-    /* Action Buttons */
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.85rem;
-      justify-content: center;
-    }
-
-    button, .btn-link {
-      cursor: pointer;
-      border: none;
-      border-radius: 12px;
-      padding: 0.78rem 1.35rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      text-decoration: none;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-      color: #ffffff;
-      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.3);
-    }
-
-    body.mode-503 .btn-primary {
-      background: linear-gradient(135deg, var(--accent-amber), var(--accent-orange));
-      color: #090d16;
-      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.32);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-    }
-
-    .btn-secondary {
-      background: rgba(30, 41, 59, 0.85);
-      color: var(--text-main);
-      border: 1px solid rgba(148, 163, 184, 0.25);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(51, 65, 85, 0.9);
-      border-color: var(--accent-cyan);
-    }
-
-    .btn-warp.active {
-      background: rgba(236, 72, 153, 0.22);
-      border-color: var(--accent-pink);
-      color: #fbcfe8;
-      box-shadow: 0 0 18px rgba(236, 72, 153, 0.35);
-    }
-
-    .footer-hint {
-      margin-top: 1.35rem;
-      font-size: 0.76rem;
-      color: var(--text-muted);
-    }
-
-    kbd {
-      background: rgba(30, 41, 59, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.3);
-      border-radius: 5px;
-      padding: 0.1rem 0.4rem;
-      font-size: 0.72rem;
-      color: #e2e8f0;
+    p {
+      color: #94a3b8;
+      font-size: 1rem;
+      line-height: 1.6;
     }
   </style>
 </head>
-<body class="mode-503">
+<body>
   <canvas id="starfield"></canvas>
-  <div class="nebula-glow"></div>
 
-  <main class="container">
-    <div class="top-bar">
-      <div class="telemetry-header">
-        <span id="statusDot" class="pulse-dot maint"></span>
-        <span id="statusBannerText">DRY-DOCK OVERHAUL: IN PROGRESS</span>
-      </div>
-
-      <div class="mode-switcher" role="group" aria-label="Status Code Preview">
-        <button type="button" class="mode-btn" data-mode="404">404 Void</button>
-        <button type="button" class="mode-btn active" data-mode="503">503 Repair</button>
-      </div>
-    </div>
-
-    <!-- HERO SECTION -->
-    <div class="hero-visual">
-      <!-- 404 Visual -->
-      <div class="visual-404">
-        <div class="error-code">404</div>
-        <svg class="planet-float" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <circle cx="50" cy="50" r="22" fill="url(#planetGrad)" />
-          <ellipse cx="50" cy="50" rx="42" ry="12" transform="rotate(-22 50 50)" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="6 4" />
-          <circle cx="84" cy="36" r="4" fill="#ec4899" />
-          <defs>
-            <linearGradient id="planetGrad" x1="28" y1="28" x2="72" y2="72" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#a855f7" />
-              <stop offset="1" stop-color="#1e1b4b" />
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
-
-      <!-- 503 Self-Repairing Robot Visual -->
-      <div class="robot-stage">
-        <div class="error-code">503</div>
-        <svg class="robot-svg" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Self-repairing maintenance robot">
-          <!-- Thruster Flame -->
-          <path d="M68 134 L80 152 L92 134 Z" fill="#f97316" opacity="0.85" />
-          <path d="M73 134 L80 146 L87 134 Z" fill="#fef08a" />
-
-          <!-- Antenna -->
-          <line x1="80" y1="16" x2="80" y2="30" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" />
-          <circle class="robot-antenna-light" cx="80" cy="13" r="5" fill="#f59e0b" />
-
-          <!-- Robot Head -->
-          <rect x="54" y="30" width="52" height="34" rx="10" fill="#1e293b" stroke="#64748b" stroke-width="2.5" />
-          <!-- Visor Screen -->
-          <rect x="61" y="37" width="38" height="20" rx="6" fill="#090d16" />
-          <!-- Focused Eyes (One squinting while welding) -->
-          <circle cx="71" cy="47" r="3.5" fill="#38bdf8" />
-          <path d="M84 47 L93 47" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" />
-
-          <!-- Neck -->
-          <rect x="72" y="64" width="16" height="7" fill="#475569" />
-
-          <!-- Torso Chassis -->
-          <rect x="46" y="71" width="68" height="58" rx="12" fill="#1e293b" stroke="#64748b" stroke-width="2.5" />
-          <!-- Lower Thruster Base -->
-          <rect x="62" y="129" width="36" height="7" rx="3" fill="#334155" />
-
-          <!-- Open Maintenance Chest Hatch -->
-          <rect x="58" y="81" width="44" height="36" rx="6" fill="#090d16" stroke="#f59e0b" stroke-width="1.5" />
-          <!-- Hinged Hatch Door Swung Open -->
-          <rect x="47" y="81" width="10" height="36" rx="3" fill="#334155" stroke="#64748b" stroke-width="1.5" />
-
-          <!-- Internal Circuitry & Glowing Core -->
-          <circle cx="80" cy="99" r="9" fill="#f59e0b" opacity="0.25" />
-          <circle cx="80" cy="99" r="5" fill="#38bdf8" />
-          <path d="M64 89 H74 M64 109 H75 M86 89 H96" stroke="#10b981" stroke-width="2" stroke-linecap="round" />
-
-          <!-- Left Arm Holding Wrench (Adjusting Internal Bolt) -->
-          <g class="robot-wrench-arm">
-            <path d="M46 84 C26 84, 26 104, 48 104 L65 104" stroke="#94a3b8" stroke-width="6" stroke-linecap="round" fill="none" />
-            <!-- Wrench Head -->
-            <path d="M63 99 L72 99 L75 104 L72 109 L63 109 L66 104 Z" fill="#e2e8f0" />
-          </g>
-
-          <!-- Right Arm Holding Plasma Welding Torch -->
-          <g class="robot-torch-arm">
-            <path d="M114 84 C134 84, 132 102, 110 100 L92 97" stroke="#94a3b8" stroke-width="6" stroke-linecap="round" fill="none" />
-            <!-- Welding Torch Nozzle -->
-            <rect x="84" y="93" width="12" height="6" rx="2" transform="rotate(10 84 93)" fill="#f97316" />
-          </g>
-
-          <!-- Welding Arc Flash & Sparks -->
-          <circle class="weld-flash" cx="82" cy="96" r="7" fill="#fef08a" />
-          <circle class="spark-1" cx="80" cy="95" r="2" fill="#fde047" />
-          <circle class="spark-2" cx="83" cy="94" r="2" fill="#fb923c" />
-          <circle class="spark-3" cx="81" cy="97" r="1.8" fill="#38bdf8" />
-        </svg>
-      </div>
-    </div>
-
-    <h1 id="headlineText">503 – Service Unavailable</h1>
-    <p id="subheadlineText" class="subtitle">
-      Autonomous droid Unit-734 is currently welding core circuits and recalibrating the subspace relay. Service will resume shortly.
-    </p>
-
-    <!-- 503 SUBSYSTEM REPAIR PROGRESS -->
-    <section class="repair-progress-panel" aria-label="Maintenance Repair Progress">
-      <div class="repair-row">
-        <div class="repair-label-row">
-          <span>UNIT-734 // QUANTUM CORE WELDING</span>
-          <span id="corePctLabel">78%</span>
-        </div>
-        <div class="progress-track">
-          <div id="coreBar" class="progress-fill" style="width: 78%;"></div>
-        </div>
-      </div>
-      <div class="repair-row">
-        <div class="repair-label-row">
-          <span>SUBSPACE RELAY RECALIBRATION</span>
-          <span id="relayPctLabel">54%</span>
-        </div>
-        <div class="progress-track">
-          <div id="relayBar" class="progress-fill" style="width: 54%;"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- NETWORK TELEMETRY GRID -->
-    <section class="diagnostics-panel" aria-label="Network Telemetry">
-      <div class="panel-top">
-        <span>Network Telemetry</span>
-        <span id="timestampDisplay">--:--:-- UTC</span>
-      </div>
-      <div class="metrics-grid">
-        <div class="metric-box">
-          <div class="metric-label">Link State</div>
-          <div id="linkStateVal" class="metric-value ok">ONLINE</div>
-        </div>
-        <div class="metric-box">
-          <div class="metric-label">Signal Latency</div>
-          <div id="latencyVal" class="metric-value">24 ms</div>
-        </div>
-        <div class="metric-box">
-          <div class="metric-label" id="thirdMetricLabel">Est. Reboot</div>
-          <div id="connTypeVal" class="metric-value warn">04:20 ETA</div>
-        </div>
-        <div class="metric-box">
-          <div class="metric-label">Sector Code</div>
-          <div id="errorCodeVal" class="metric-value warn">HTTP_503_MAINT</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ACTIONS -->
-    <div class="actions">
-      <button id="scanBtn" class="btn-primary" type="button">
-        <span id="scanBtnLabel">Check Uplink Ready</span>
-      </button>
-      <a href="/" class="btn-secondary btn-link">
-        <span>Return to Base</span>
-      </a>
-      <button id="warpBtn" class="btn-secondary btn-warp" type="button">
-        <span>Engage Warp</span>
-      </button>
-    </div>
-
-    <p class="footer-hint">
-      Pro tip: Hold <kbd>Space</kbd> or toggle Warp Drive to accelerate through the sector.
-    </p>
+  <main>
+    <div class="code">503</div>
+    <h1>503 – Service Unavailable</h1>
+    <p>Autonomous droid Unit-734 is currently repairing core circuits and recalibrating the subspace relay. Service will resume shortly.</p>
   </main>
 
   <script>
-    // ==========================================
-    // 1. STATE & MODE MANAGEMENT (404 vs 503)
-    // ==========================================
-    const urlParams = new URLSearchParams(window.location.search);
-    let currentMode = urlParams.get("status") === "404" ? "404" : "503";
-
-    const statusDot = document.getElementById("statusDot");
-    const statusBannerText = document.getElementById("statusBannerText");
-    const headlineText = document.getElementById("headlineText");
-    const subheadlineText = document.getElementById("subheadlineText");
-    const linkStateVal = document.getElementById("linkStateVal");
-    const latencyVal = document.getElementById("latencyVal");
-    const thirdMetricLabel = document.getElementById("thirdMetricLabel");
-    const connTypeVal = document.getElementById("connTypeVal");
-    const errorCodeVal = document.getElementById("errorCodeVal");
-    const timestampDisplay = document.getElementById("timestampDisplay");
-    const scanBtn = document.getElementById("scanBtn");
-    const scanBtnLabel = document.getElementById("scanBtnLabel");
-    const modeBtns = document.querySelectorAll(".mode-btn");
-
-    // 503 Repair Progress Simulation
-    let corePct = 78;
-    let relayPct = 54;
-    let etaSeconds = 260;
-    const corePctLabel = document.getElementById("corePctLabel");
-    const relayPctLabel = document.getElementById("relayPctLabel");
-    const coreBar = document.getElementById("coreBar");
-    const relayBar = document.getElementById("relayBar");
-
-    function updateClock() {
-      const now = new Date();
-      timestampDisplay.textContent = now.toISOString().split("T")[1].slice(0, 8) + " UTC";
-
-      if (currentMode === "503") {
-        if (etaSeconds > 0) etaSeconds--;
-        const mins = String(Math.floor(etaSeconds / 60)).padStart(2, "0");
-        const secs = String(etaSeconds % 60).padStart(2, "0");
-        connTypeVal.textContent = `${mins}:${secs} ETA`;
-
-        if (corePct < 99 && Math.random() > 0.55) {
-          corePct += 1;
-          corePctLabel.textContent = `${corePct}%`;
-          coreBar.style.width = `${corePct}%`;
-        }
-        if (relayPct < 96 && Math.random() > 0.65) {
-          relayPct += 1;
-          relayPctLabel.textContent = `${relayPct}%`;
-          relayBar.style.width = `${relayPct}%`;
-        }
-      }
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    function setMode(mode) {
-      currentMode = mode;
-      document.body.classList.toggle("mode-503", mode === "503");
-      document.title = mode === "503" ? "503 – Service Unavailable" : "404 – Page Not Found";
-
-      modeBtns.forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.mode === mode);
-      });
-
-      const nextUrl = new URL(window.location);
-      nextUrl.searchParams.set("status", mode);
-      window.history.replaceState({}, "", nextUrl);
-
-      updateNetworkUI();
-    }
-
-    modeBtns.forEach((btn) => {
-      btn.addEventListener("click", () => setMode(btn.dataset.mode));
-    });
-
-    function updateNetworkUI() {
-      const isOnline = navigator.onLine;
-      const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-
-      statusDot.classList.remove("offline", "maint");
-
-      if (!isOnline) {
-        statusDot.classList.add("offline");
-        statusBannerText.textContent = "SUBSPACE LINK: SEVERED";
-        linkStateVal.textContent = "OFFLINE";
-        linkStateVal.className = "metric-value err";
-        latencyVal.textContent = "TIMEOUT";
-        errorCodeVal.textContent = "NET_DISCONNECTED";
-        errorCodeVal.className = "metric-value err";
-        headlineText.textContent = "Comms Array Offline";
-        subheadlineText.textContent =
-          "No carrier wave detected. Check your local router, Wi-Fi, or planetary uplink and try scanning again.";
-        return;
-      }
-
-      linkStateVal.textContent = "ONLINE";
-      linkStateVal.className = "metric-value ok";
-
-      if (currentMode === "503") {
-        statusDot.classList.add("maint");
-        statusBannerText.textContent = "DRY-DOCK OVERHAUL: IN PROGRESS";
-        headlineText.textContent = "503 – Service Unavailable";
-        subheadlineText.textContent =
-          "Autonomous droid Unit-734 is currently welding core circuits and recalibrating the subspace relay. Service will resume shortly.";
-        thirdMetricLabel.textContent = "Est. Reboot";
-        const mins = String(Math.floor(etaSeconds / 60)).padStart(2, "0");
-        const secs = String(etaSeconds % 60).padStart(2, "0");
-        connTypeVal.textContent = `${mins}:${secs} ETA`;
-        connTypeVal.className = "metric-value warn";
-        errorCodeVal.textContent = "HTTP_503_MAINT";
-        errorCodeVal.className = "metric-value warn";
-        scanBtnLabel.textContent = "Check Uplink Ready";
-      } else {
-        statusBannerText.textContent = "SUBSPACE LINK: ESTABLISHED";
-        headlineText.textContent = "Coordinates Lost in Deep Space";
-        subheadlineText.textContent =
-          "Your local transceiver is online, but the requested sector does not exist or has drifted out of orbit.";
-        thirdMetricLabel.textContent = "Band / Type";
-        connTypeVal.className = "metric-value";
-        errorCodeVal.textContent = "HTTP_404_MISSING";
-        errorCodeVal.className = "metric-value";
-        scanBtnLabel.textContent = "Run Signal Scan";
-
-        if (conn) {
-          const type = (conn.effectiveType || conn.type || "UNKNOWN").toUpperCase();
-          const downlink = conn.downlink ? `${conn.downlink} Mbps` : "";
-          connTypeVal.textContent = downlink ? `${type} (${downlink})` : type;
-        } else {
-          connTypeVal.textContent = "STANDARD";
-        }
-      }
-
-      if (conn && typeof conn.rtt === "number" && conn.rtt > 0) {
-        latencyVal.textContent = `${conn.rtt} ms`;
-      }
-    }
-
-    async function runDiagnostics() {
-      scanBtn.disabled = true;
-      scanBtnLabel.textContent = currentMode === "503" ? "Pinging Dock..." : "Scanning Subspace...";
-      latencyVal.textContent = "PINGING...";
-
-      const start = performance.now();
-      try {
-        await fetch(window.location.origin + "/?_ping=" + Date.now(), {
-          method: "HEAD",
-          cache: "no-store"
-        });
-        const rtt = Math.max(1, Math.round(performance.now() - start));
-        latencyVal.textContent = `${rtt} ms`;
-        updateNetworkUI();
-      } catch (err) {
-        if (!navigator.onLine) {
-          updateNetworkUI();
-        } else {
-          latencyVal.textContent = "STANDBY";
-        }
-      } finally {
-        setTimeout(() => {
-          scanBtn.disabled = false;
-          scanBtnLabel.textContent = currentMode === "503" ? "Check Uplink Ready" : "Run Signal Scan";
-        }, 450);
-      }
-    }
-
-    window.addEventListener("online", updateNetworkUI);
-    window.addEventListener("offline", updateNetworkUI);
-    if (navigator.connection) {
-      navigator.connection.addEventListener("change", updateNetworkUI);
-    }
-    scanBtn.addEventListener("click", runDiagnostics);
-
-    // Initialize mode
-    setMode(currentMode);
-
-    // ==========================================
-    // 2. INTERACTIVE GALAXY & WARP STARFIELD
-    // ==========================================
     const canvas = document.getElementById("starfield");
     const ctx = canvas.getContext("2d");
-    const warpBtn = document.getElementById("warpBtn");
+    let width, height, stars = [];
 
-    let width, height, centerX, centerY;
-    let stars = [];
-    const STAR_COUNT = 320;
-    let warpActive = false;
-    let speed = 0.35;
-    let mouseX = 0;
-    let mouseY = 0;
-
-    function resizeCanvas() {
+    function resize() {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
-      centerX = width / 2;
-      centerY = height / 2;
+      stars = Array.from({ length: 220 }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 1.5 + 0.3,
+        a: Math.random(),
+        s: (Math.random() - 0.5) * 0.02
+      }));
     }
-
-    function createStar() {
-      const colors = ["#ffffff", "#bae6fd", "#e9d5ff", "#fbcfe8", "#fde68a"];
-      return {
-        x: (Math.random() - 0.5) * width * 1.5,
-        y: (Math.random() - 0.5) * height * 1.5,
-        z: Math.random() * width,
-        pz: 0,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        size: Math.random() * 1.6 + 0.5
-      };
-    }
-
-    function initStars() {
-      stars = [];
-      for (let i = 0; i < STAR_COUNT; i++) {
-        const s = createStar();
-        s.pz = s.z;
-        stars.push(s);
-      }
-    }
-
-    function toggleWarp(forceState) {
-      warpActive = typeof forceState === "boolean" ? forceState : !warpActive;
-      warpBtn.classList.toggle("active", warpActive);
-      warpBtn.innerHTML = warpActive
-        ? "<span>Disengage Warp</span>"
-        : "<span>Engage Warp</span>";
-    }
-
-    warpBtn.addEventListener("click", () => toggleWarp());
-
-    window.addEventListener("keydown", (e) => {
-      if (e.code === "Space" && document.activeElement !== scanBtn) {
-        e.preventDefault();
-        if (!warpActive) toggleWarp(true);
-      }
-    });
-
-    window.addEventListener("keyup", (e) => {
-      if (e.code === "Space") {
-        toggleWarp(false);
-      }
-    });
-
-    window.addEventListener("mousemove", (e) => {
-      mouseX = (e.clientX - centerX) * 0.04;
-      mouseY = (e.clientY - centerY) * 0.04;
-    });
-
-    window.addEventListener("resize", () => {
-      resizeCanvas();
-      initStars();
-    });
 
     function animate() {
-      const targetSpeed = warpActive ? 22 : 0.45;
-      speed += (targetSpeed - speed) * 0.08;
-
-      ctx.fillStyle = warpActive ? "rgba(4, 5, 13, 0.28)" : "rgba(4, 5, 13, 0.85)";
+      ctx.fillStyle = "#04050d";
       ctx.fillRect(0, 0, width, height);
 
-      for (let i = 0; i < stars.length; i++) {
-        const star = stars[i];
-        star.pz = star.z;
-        star.z -= speed;
-
-        if (star.z <= 1) {
-          star.x = (Math.random() - 0.5) * width * 1.5;
-          star.y = (Math.random() - 0.5) * height * 1.5;
-          star.z = width;
-          star.pz = star.z;
-        }
-
-        const sx = (star.x / star.z) * width + centerX - mouseX;
-        const sy = (star.y / star.z) * height + centerY - mouseY;
-
-        const px = (star.x / star.pz) * width + centerX - mouseX;
-        const py = (star.y / star.pz) * height + centerY - mouseY;
-
-        const radius = Math.max(0.3, (1 - star.z / width) * star.size * 2.2);
-
-        if (speed > 2) {
-          ctx.beginPath();
-          ctx.strokeStyle = star.color;
-          ctx.lineWidth = radius;
-          ctx.moveTo(px, py);
-          ctx.lineTo(sx, sy);
-          ctx.stroke();
-        } else {
-          ctx.beginPath();
-          ctx.fillStyle = star.color;
-          ctx.arc(sx, sy, radius, 0, Math.PI * 2);
-          ctx.fill();
-        }
+      for (const star of stars) {
+        star.a += star.s;
+        if (star.a <= 0.1 || star.a >= 1) star.s *= -1;
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.a})`;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fill();
       }
-
       requestAnimationFrame(animate);
     }
 
-    resizeCanvas();
-    initStars();
+    window.addEventListener("resize", resize);
+    resize();
     animate();
   </script>
 </body>
 </html>
-
-```
